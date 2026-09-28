@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ocean Quiz 🌊</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Quicksand', sans-serif;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.45), transparent 20%),
+        linear-gradient(160deg, #c8f7f8, #79d5e4, #329fbd, #176f91);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #164d63;
+}
+
+/* BUBBLES */
+
+.bubble {
+    position: absolute;
+    bottom: -60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.25);
+    border: 1px solid rgba(255,255,255,.45);
+    animation: float 9s infinite ease-in;
+}
+
+.b1 { width:20px; height:20px; left:10%; animation-delay:1s; }
+.b2 { width:14px; height:14px; left:25%; animation-delay:4s; }
+.b3 { width:30px; height:30px; left:48%; animation-delay:2s; }
+.b4 { width:17px; height:17px; left:70%; animation-delay:5s; }
+.b5 { width:25px; height:25px; left:88%; animation-delay:3s; }
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
+
+/* CARD */
+
+.card {
+    width: min(90%, 520px);
+    min-height: 420px;
+    padding: 42px 30px;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,.8);
+
+    box-shadow:
+        0 20px 60px rgba(20,90,110,.25);
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+    z-index: 5;
+
+    animation: appear .45s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.emoji {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    margin: 0 0 18px;
+    font-size: 29px;
+    color: #15536b;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.55;
+    margin: 0 0 28px;
+    color: #28677c;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 13px;
+}
+
+button {
+    border: none;
+    border-radius: 50px;
+
+    padding: 13px 23px;
+
+    background: white;
+    color: #17627b;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 7px 18px rgba(25,115,140,.18);
+
+    transition: .2s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    background: #ecfcfd;
+}
+
+button:active {
+    transform: scale(.95);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<div class="bubble b5"></div>
+
+<div class="card" id="quiz"></div>
+
+
+<script>
+
+const quiz = document.getElementById("quiz");
+
+
+/* --------------------------------
+   PAGE SYSTEM
+-------------------------------- */
+
+function page(emoji, title, text, choices) {
+
+    quiz.style.animation = "none";
+    void quiz.offsetWidth;
+    quiz.style.animation = "appear .45s ease";
+
+    quiz.innerHTML = `
+        <div class="emoji">${emoji}</div>
+
+        <h1>${title}</h1>
+
+        <p>${text}</p>
+
+        <div class="buttons"></div>
+    `;
+
+    const buttonArea = quiz.querySelector(".buttons");
+
+    choices.forEach(choice => {
+
+        const button = document.createElement("button");
+
+        button.textContent = choice.text;
+
+        button.addEventListener("click", choice.action);
+
+        buttonArea.appendChild(button);
+    });
+}
+
+
+/* --------------------------------
+   WELCOME
+-------------------------------- */
+
+function welcome() {
+
+    page(
+        "🌊",
+        "Hello beauties, welcome!!!",
+        "A tiny ocean quiz awaits you... 🐚",
+        [
+            {
+                text: "Accept welcome 💙",
+                action: questionsIntro
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   INTRO
+-------------------------------- */
+
+function questionsIntro() {
+
+    page(
+        "🫧",
+        "Okkk so...",
+        "There are a few questions I wanna ask 😭",
+        [
+            {
+                text: "Okk I'm ready for questions ✨",
+                action: spiderQuestion
+            },
+            {
+                text: "No hehe 😈",
+                action: notReady
+            }
+        ]
+    );
+}
+
+
+function notReady() {
+
+    page(
+        "😭",
+        "You should have choice ques 🤧😭",
+        "You had one job... 😭🌊",
+        [
+            {
+                text: "Fineee 😭",
+                action: spiderQuestion
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   SPIDER
+-------------------------------- */
+
+function spiderQuestion() {
+
+    page(
+        "🕷️",
+        "Who is spider?",
+        "Choose wisely... 👀",
+        [
+            {
+                text: "Sam",
+                action: spiderSam
+            },
+            {
+                text: "Vuvu",
+                action: wallQuestion
+            }
+        ]
+    );
+}
+
+
+function spiderSam() {
+
+    page(
+        "🌻🐜",
+        "WHATT!!",
+        "She is sunflower! Or makudi 🐜",
+        [
+            {
+                text: "Oh... 😭",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   WALL
+-------------------------------- */
+
+function wallQuestion() {
+
+    page(
+        "🌊",
+        "Who loves wall more?",
+        "This one should be easy... maybe 👀",
+        [
+            {
+                text: "Dingan",
+                action: windowQuestion
+            },
+            {
+                text: "Vuvu",
+                action: wallWrong
+            }
+        ]
+    );
+}
+
+
+function wallWrong() {
+
+    page(
+        "😭",
+        "That's sometimes true...",
+        "But wrong! Better luck next time 🫧",
+        [
+            {
+                text: "Bye 😭",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   WINDOW
+-------------------------------- */
+
+function windowQuestion() {
+
+    page(
+        "🪟",
+        "Someone who can't skip 🪟",
+        "Who is it? 👀",
+        [
+            {
+                text: "Sam",
+                action: fruityQuestion
+            },
+            {
+                text: "Dingan",
+                action: windowWrong
+            }
+        ]
+    );
+}
+
+
+function windowWrong() {
+
+    page(
+        "😭",
+        "Ohooo...",
+        "U made a mistake.",
+        [
+            {
+                text: "NOOO 😭",
+                action: windowQuestion
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   FRUITY
+-------------------------------- */
+
+function fruityQuestion() {
+
+    page(
+        "🍓",
+        "Now deep ques: hard lvl 😈",
+        "Who can u relate with fruity?",
+        [
+            {
+                text: "Vuvu",
+                action: fruityWrong
+            },
+            {
+                text: "Sam",
+                action: eyesQuestion
+            },
+            {
+                text: "Dingan",
+                action: fruityWrong
+            }
+        ]
+    );
+}
+
+
+function fruityWrong() {
+
+    page(
+        "😭🍓",
+        "Wronggg!",
+        "The fruity truth remains hidden...",
+        [
+            {
+                text: "Bye 😭",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   EYES
+-------------------------------- */
+
+function eyesQuestion() {
+
+    page(
+        "👀",
+        "Who can open eyes 24×7?",
+        "Think carefully... 👁️",
+        [
+            {
+                text: "Dingan",
+                action: babaQuestion
+            },
+            {
+                text: "Vuvu",
+                action: eyesWrong
+            },
+            {
+                text: "Sam",
+                action: eyesWrong
+            }
+        ]
+    );
+}
+
+
+function eyesWrong() {
+
+    page(
+        "👀😭",
+        "Worngg!!",
+        "Unfortunately... nope 😭",
+        [
+            {
+                text: "Bye 🫧",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   BABA
+-------------------------------- */
+
+function babaQuestion() {
+
+    page(
+        "✨",
+        "Who is baba?",
+        "Final question... 👀",
+        [
+            {
+                text: "Sam",
+                action: babaWrong
+            },
+            {
+                text: "Dingan",
+                action: babaWrong
+            },
+            {
+                text: "Vuvu",
+                action: finalPage
+            }
+        ]
+    );
+}
+
+
+function babaWrong() {
+
+    page(
+        "😭",
+        "Ohoo...",
+        "Wrong.",
+        [
+            {
+                text: "I accept defeat 😭",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* --------------------------------
+   FINAL
+-------------------------------- */
+
+function finalPage() {
+
+    page(
+        "🌊🐚✨",
+        "That's all for now guys!",
+        "Byeeeee 😭💙",
+        [
+            {
+                text: "Bye bye 🌊",
+                action: welcome
+            }
+        ]
+    );
+}
+
+
+/* START */
+
+welcome();
+
+</script>
+
+</body>
+</html>
